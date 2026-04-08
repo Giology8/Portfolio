@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giovanni Marcondes — Project Portfolio</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0e0f11;
+    --bg2: #15171a;
+    --bg3: #1c1f24;
+    --bg4: #23272e;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8e6df;
+    --text2: #9a9690;
+    --text3: #5c5a56;
+    --accent: #7f77dd;
+    --accent2: #534ab7;
+    --teal: #1d9e75;
+    --coral: #d85a30;
+    --amber: #ef9f27;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── SPLASH ── */
+  #splash {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    cursor: pointer;
+  }
+  #splash.out {
+    opacity: 0;
+    transform: translateY(-40px);
+    pointer-events: none;
+  }
+  .splash-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 20px;
+  }
+  .splash-name {
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    line-height: 1.1;
+    text-align: center;
+  }
+  .splash-name span { color: var(--accent); }
+  .splash-sub {
+    margin-top: 18px;
+    font-size: 16px;
+    color: var(--text2);
+    text-align: center;
+    max-width: 480px;
+    padding: 0 24px;
+  }
+  .splash-cta {
+    margin-top: 52px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border: 1px solid var(--border2);
+    border-radius: 40px;
+    font-size: 14px;
+    color: var(--text2);
+    background: var(--bg3);
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  #splash:hover .splash-cta {
+    border-color: var(--accent);
+    color: var(--text);
+    background: var(--bg4);
+  }
+  .cta-arrow { font-size: 18px; transition: transform 0.2s; }
+  #splash:hover .cta-arrow { transform: translateX(4px); }
+
+  .splash-dots {
+    position: absolute;
+    bottom: 40px;
+    display: flex;
+    gap: 8px;
+  }
+  .splash-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border2);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  .splash-dot:nth-child(2) { animation-delay: 0.4s; }
+  .splash-dot:nth-child(3) { animation-delay: 0.8s; }
+  @keyframes pulse {
+    0%,100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  /* ── MAIN ── */
+  #main {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+    min-height: 100vh;
+  }
+  #main.in { opacity: 1; transform: translateY(0); }
+
+  /* ── HEADER ── */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(14,15,17,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 clamp(20px, 4vw, 60px);
+    display: flex;
+    align-items: center;
+    height: 56px;
+    gap: 32px;
+  }
+  .header-logo {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .header-logo span { color: var(--accent); }
+
+  /* ── TABS ── */
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex: 1;
+  }
+  .tab-nav::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text2);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { background: var(--bg3); color: var(--text); }
+  .tab-btn.active { background: var(--bg4); color: var(--text); }
+
+  /* ── CONTENT ── */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── HERO SECTION ── */
+  .project-hero {
+    padding: clamp(48px, 7vw, 96px) clamp(20px, 4vw, 60px) clamp(32px, 5vw, 60px);
+    max-width: 860px;
+  }
+  .project-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+    padding: 5px 12px;
+    border: 1px solid rgba(127,119,221,0.3);
+    border-radius: 20px;
+    background: rgba(127,119,221,0.07);
+  }
+  .project-title {
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+  .project-desc {
+    font-size: 16px;
+    color: var(--text2);
+    max-width: 620px;
+    line-height: 1.75;
+  }
+
+  /* ── META ROW ── */
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 0 clamp(20px, 4vw, 60px) 32px;
+  }
+  .meta-chip {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .meta-chip .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0 clamp(20px, 4vw, 60px);
+  }
+
+  /* ── GRID CARDS ── */
+  .cards-section {
+    padding: 40px clamp(20px, 4vw, 60px);
+  }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 24px;
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover {
+    border-color: var(--border2);
+    transform: translateY(-2px);
+  }
+  .card-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    margin-bottom: 14px;
+    flex-shrink: 0;
+  }
+  .card-icon.purple { background: rgba(127,119,221,0.15); color: var(--accent); }
+  .card-icon.teal { background: rgba(29,158,117,0.15); color: var(--teal); }
+  .card-icon.coral { background: rgba(216,90,48,0.15); color: var(--coral); }
+  .card-icon.amber { background: rgba(239,159,39,0.15); color: var(--amber); }
+  .card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .card p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.65;
+  }
+
+  /* ── STAT CARDS ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    padding: 0 clamp(20px, 4vw, 60px) 40px;
+  }
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 16px;
+  }
+  .stat-num {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.4;
+  }
+
+  /* ── PIPELINE STEPS ── */
+  .pipeline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 0 clamp(20px, 4vw, 60px) 40px;
+  }
+  .pipeline-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    flex: 1;
+    min-width: 180px;
+    padding: 20px 16px 20px 0;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+  .pipeline-step:last-child { border-right: none; padding-right: 0; }
+  .pipeline-step + .pipeline-step { padding-left: 20px; }
+  .step-num {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .step-body h4 { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .step-body p { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+  /* ── TECH STACK ── */
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 clamp(20px, 4vw, 60px) 40px;
+  }
+  .tech-pill {
+    padding: 5px 13px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text2);
+    background: var(--bg2);
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .tech-pill:hover { border-color: var(--accent); color: var(--text); }
+
+  /* ── QUOTE ── */
+  .reflection-block {
+    margin: 0 clamp(20px, 4vw, 60px) 40px;
+    padding: 24px 28px;
+    border-left: 3px solid var(--accent);
+    background: var(--bg2);
+    border-radius: 0 10px 10px 0;
+  }
+  .reflection-block p {
+    font-size: 15px;
+    color: var(--text2);
+    line-height: 1.75;
+    font-style: italic;
+  }
+  .reflection-block cite {
+    display: block;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--text3);
+    font-style: normal;
+  }
+
+  /* ── APP SCREENS MOCKUP ── */
+  .screens-row {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 0 clamp(20px, 4vw, 60px) 40px;
+    scrollbar-width: none;
+  }
+  .screens-row::-webkit-scrollbar { display: none; }
+  .screen-card {
+    flex-shrink: 0;
+    width: 180px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .screen-top {
+    height: 8px;
+    background: #1a6e4e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .screen-body {
+    padding: 12px;
+  }
+  .screen-title {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+  .screen-item {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 8px;
+    margin-bottom: 5px;
+  }
+  .screen-item-label { font-size: 8px; font-weight: 600; color: var(--text); }
+  .screen-item-sub { font-size: 7px; color: var(--text2); margin-top: 1px; }
+  .screen-nav {
+    display: flex;
+    justify-content: space-around;
+    padding: 7px 6px;
+    border-top: 1px solid var(--border);
+    background: #1a6e4e;
+  }
+  .nav-icon {
+    width: 16px; height: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .nav-icon-symbol { font-size: 8px; }
+  .nav-icon-text { font-size: 5px; color: rgba(255,255,255,0.7); }
+  .screen-footer-label {
+    font-size: 11px;
+    color: var(--text2);
+    text-align: center;
+    margin-top: 8px;
+    padding-bottom: 4px;
+  }
+
+  /* ── FINDINGS ── */
+  .findings-list {
+    padding: 0 clamp(20px, 4vw, 60px) 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .finding-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .finding-badge {
+    flex-shrink: 0;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .finding-badge.high { background: rgba(216,90,48,0.15); color: var(--coral); }
+  .finding-badge.med { background: rgba(239,159,39,0.15); color: var(--amber); }
+  .finding-badge.low { background: rgba(29,158,117,0.15); color: var(--teal); }
+  .finding-text { font-size: 13px; color: var(--text2); line-height: 1.55; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .pipeline { flex-direction: column; }
+    .pipeline-step { border-right: none; border-bottom: 1px solid var(--border); padding: 16px 0; }
+    .pipeline-step + .pipeline-step { padding-left: 0; }
+    .pipeline-step:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash" onclick="enterPortfolio()">
+  <p class="splash-eyebrow">CSU · Fort Collins, CO</p>
+  <h1 class="splash-name">Giovanni<br><span>Marcondes</span></h1>
+  <p class="splash-sub">A collection of academic and applied projects spanning AI, data engineering, and product design.</p>
+  <div class="splash-cta">
+    View projects <span class="cta-arrow">→</span>
+  </div>
+  <div class="splash-dots">
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+  <header class="site-header">
+    <div class="header-logo">GM <span>·</span> Projects</div>
+    <nav class="tab-nav" id="tabNav">
+      <button class="tab-btn active" onclick="switchTab('marcdown')">MarcDown AI</button>
+      <button class="tab-btn" onclick="switchTab('dragon')">DRAGON SDoH</button>
+      <button class="tab-btn" onclick="switchTab('recapp')">CSU Rec App</button>
+    </nav>
+  </header>
+
+  <!-- ══════════════ TAB 1 — MARCDOWN ══════════════ -->
+  <div id="tab-marcdown" class="tab-content active">
+    <div class="project-hero">
+      <div class="project-tag">BUS 479 · AI Intern Project · 2026</div>
+      <h1 class="project-title">MarcDown<br>Interview Assistant</h1>
+      <p class="project-desc">A production-oriented macOS desktop application that sits alongside a recruiter during live interviews — capturing audio, generating real-time summaries, suggesting ranked follow-up questions, and scoring candidates out of 100.</p>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-chip"><span class="dot" style="background:var(--accent)"></span> Tauri v2 + Rust</div>
+      <div class="meta-chip"><span class="dot" style="background:var(--teal)"></span> React + TypeScript</div>
+      <div class="meta-chip"><span class="dot" style="background:var(--coral)"></span> Claude API</div>
+      <div class="meta-chip"><span class="dot" style="background:var(--amber)"></span> macOS Keychain</div>
+      <div class="meta-chip"><span class="dot" style="background:#5c5a56"></span> Local-first · No remote storage</div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">Core features</p>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon purple">🎙</div>
+          <h3>Real-time transcription</h3>
+          <p>Captures recruiter mic and system audio (works on speaker calls too), producing a single mixed transcript with no raw audio stored by default.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon teal">📋</div>
+          <h3>Live structured summary</h3>
+          <p>Left pane continuously updates with Question, Key Answer, and Follow-up Needed sections. Editable by the recruiter mid-session with a one-click copy button.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon coral">🔎</div>
+          <h3>Research engine</h3>
+          <p>Right pane surfaces condensed web research on entities mentioned (companies, technologies, projects). Each insight is labeled: Transcript Fact, Inference, or External Research.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon amber">🏆</div>
+          <h3>Fit scoring (out of 100)</h3>
+          <p>End-of-session debrief with a weighted overall score and subscores across Skills Match, Experience Depth, Domain Fit, Communication Clarity, Ownership, and Risk/Credibility.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">Session flow</p>
+    </div>
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Setup</h4>
+          <p>Upload job files, paste job description, add recruiter priorities, review and edit the AI-generated scoring rubric.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Consent check</h4>
+          <p>Compliance warning displayed before any audio capture begins — recruiter accepts legal responsibility.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Live session</h4>
+          <p>Two-pane view: summary left, research insights right. Research can be paused independently from transcription.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>Debrief</h4>
+          <p>Score report, strengths & concerns, recommendation, and optional PDF/DOCX export. Data only persists if recruiter clicks Save.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">Bias & compliance rules</p>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon purple">🛡</div>
+          <h3>Protected attributes excluded</h3>
+          <p>Hard-coded rule prevents inference or scoring based on age, ethnicity, religion, disability, health, family status, nationality, or accent-based traits.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon teal">🔐</div>
+          <h3>Security-first architecture</h3>
+          <p>Secrets in macOS Keychain, encrypted local storage, strict Tauri IPC boundary, no raw audio ever sent to the internet, no hidden telemetry.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon coral">📊</div>
+          <h3>Auditable scoring</h3>
+          <p>Every subscore links back to transcript-derived evidence or external research. Low-confidence items are clearly flagged and never presented as facts.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">Technology stack</p>
+    </div>
+    <div class="tech-stack">
+      <span class="tech-pill">Tauri v2</span>
+      <span class="tech-pill">Rust</span>
+      <span class="tech-pill">React 18</span>
+      <span class="tech-pill">TypeScript</span>
+      <span class="tech-pill">Anthropic Claude API</span>
+      <span class="tech-pill">macOS Keychain</span>
+      <span class="tech-pill">AES-256 local encryption</span>
+      <span class="tech-pill">Web Search tool</span>
+      <span class="tech-pill">PDF/DOCX export</span>
+      <span class="tech-pill">Content Security Policy</span>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section" style="padding-bottom:0">
+      <p class="section-label">Reflection</p>
+    </div>
+    <div class="reflection-block">
+      <p>"This was definitely one of the most ambitious tasks I have ever done with AI. I wasn't asking for a simple output or a single HTML file. Managing this AI Agent has been very difficult, and the more I stress-test it, the more problems I find. There is no one answer anymore."</p>
+      <cite>— Giovanni Marcondes, BUS 479 Reflection</cite>
+    </div>
+
+    <div style="height:48px"></div>
+  </div>
+
+
+  <!-- ══════════════ TAB 2 — DRAGON ══════════════ -->
+  <div id="tab-dragon" class="tab-content">
+    <div class="project-hero">
+      <div class="project-tag">CIS 355 · Snowflake / AI · Fall 2025</div>
+      <h1 class="project-title">DRAGON<br>SDoH Outreach</h1>
+      <p class="project-desc">A full end-to-end data pipeline on Snowflake that identifies and prioritizes individuals with high stress and low wellness for targeted mental-health outreach — using Social Determinants of Health (SDoH) lifestyle indicators and AI-generated notes.</p>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-chip"><span class="dot" style="background:var(--accent)"></span> Snowflake</div>
+      <div class="meta-chip"><span class="dot" style="background:var(--teal)"></span> Snowpark Python</div>
+      <div class="meta-chip"><span class="dot" style="background:var(--coral)"></span> Streamlit</div>
+      <div class="meta-chip"><span class="dot" style="background:var(--amber)"></span> AI_COMPLETE (LLM)</div>
+      <div class="meta-chip"><span class="dot" style="background:#5c5a56"></span> AnalyticsIQ SDoH Dataset</div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">Key stats</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">1,000</div>
+        <div class="stat-label">Individuals in dataset</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">22.9%</div>
+        <div class="stat-label">High-priority targets (gap ≥ 2)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">200</div>
+        <div class="stat-label">AI-generated outreach notes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">122</div>
+        <div class="stat-label">HIGH priority classifications</div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">Pipeline overview</p>
+    </div>
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>EDA</h4>
+          <p>Missingness checks, correlation analysis between stress, wellness, exercise, and job satisfaction.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Metrics view</h4>
+          <p>Created <code style="font-size:11px;color:var(--accent)">WELLNESS_FACTOR</code> view — rescaled scores to 1–7 and computed <code style="font-size:11px;color:var(--accent)">stress_minus_wellness_7</code> gap metric.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Semi-structured</h4>
+          <p>Built household JSON table using <code style="font-size:11px;color:var(--accent)">ARRAY_AGG</code> and <code style="font-size:11px;color:var(--accent)">LATERAL FLATTEN</code> for household-level risk signals.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h4>AI notes</h4>
+          <p>Used Snowflake <code style="font-size:11px;color:var(--accent)">AI_COMPLETE</code> to generate triage-based outreach notes with priority labels extracted via regex.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <h4>Streamlit app</h4>
+          <p>Interactive dashboard with priority filter, gap/stress sliders, segment explorer, household lens, and CSV export.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">What the app does</p>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon purple">📊</div>
+          <h3>Executive summary</h3>
+          <p>Live KPIs (people filtered, avg stress, avg wellness, avg gap), gap distribution bar chart, and AI priority distribution — all updating in real time with sidebar filters.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon teal">🔬</div>
+          <h3>Segment explorer</h3>
+          <p>Group by exercise level, job satisfaction, or ethnicity to identify which demographic segments have the highest average stress-minus-wellness gap.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon coral">🏠</div>
+          <h3>Household lens</h3>
+          <p>Drills into <code style="font-size:11px;color:var(--text2)">members_json</code> VARIANT arrays to surface household-level prioritization using semi-structured SQL.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon amber">📝</div>
+          <h3>Outreach notes</h3>
+          <p>Full-text search across AI-generated notes. Filter by priority label (HIGH / MEDIUM), matching targeting filters. One-click CSV download for outreach teams.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">Technology stack</p>
+    </div>
+    <div class="tech-stack">
+      <span class="tech-pill">Snowflake SQL</span>
+      <span class="tech-pill">Snowpark Python</span>
+      <span class="tech-pill">Streamlit in Snowflake</span>
+      <span class="tech-pill">AI_COMPLETE (LLM)</span>
+      <span class="tech-pill">OBJECT_CONSTRUCT</span>
+      <span class="tech-pill">LATERAL FLATTEN</span>
+      <span class="tech-pill">ARRAY_AGG</span>
+      <span class="tech-pill">Regex label extraction</span>
+      <span class="tech-pill">CSV export</span>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section" style="padding-bottom:0">
+      <p class="section-label">Business question answered</p>
+    </div>
+    <div class="reflection-block">
+      <p>"How can we identify and prioritize individuals with high stress and low wellness who are most likely to benefit from targeted mental-health outreach using SDoH lifestyle indicators? This enables actionable segmentation for outreach programs (teletherapy/coaching) rather than reporting a single descriptive statistic."</p>
+      <cite>— DRAGON Project Report, CIS 355</cite>
+    </div>
+
+    <div style="height:48px"></div>
+  </div>
+
+
+  <!-- ══════════════ TAB 3 — REC APP ══════════════ -->
+  <div id="tab-recapp" class="tab-content">
+    <div class="project-hero">
+      <div class="project-tag">CIS 360 · UX / Systems Design · 2025</div>
+      <h1 class="project-title">Revamping the<br>CSU Rec App</h1>
+      <p class="project-desc">A full UI/UX redesign and system requirements specification for the Colorado State University Recreation Center mobile app — transforming a cluttered icon-grid into a clean, student-centered experience with persistent QR login, live facility counts, and streamlined class booking.</p>
+    </div>
+
+    <div class="meta-row">
+      <div class="meta-chip"><span class="dot" style="background:var(--accent)"></span> React Native</div>
+      <div class="meta-chip"><span class="dot" style="background:var(--teal)"></span> Node.js backend</div>
+      <div class="meta-chip"><span class="dot" style="background:var(--coral)"></span> CSU SSO + Duo 2FA</div>
+      <div class="meta-chip"><span class="dot" style="background:var(--amber)"></span> Canva (UI mockups)</div>
+      <div class="meta-chip"><span class="dot" style="background:#5c5a56"></span> Team of 6</div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">Problems with the current app</p>
+    </div>
+    <div class="findings-list">
+      <div class="finding-row">
+        <div class="finding-badge high">High</div>
+        <p class="finding-text"><strong style="color:var(--text)">Barcode display failures</strong> — 60% of Rec staff reported barcode not displaying. Users forced to re-generate a new QR code every single visit.</p>
+      </div>
+      <div class="finding-row">
+        <div class="finding-badge high">High</div>
+        <p class="finding-text"><strong style="color:var(--text)">No persistent login</strong> — 70% of staff handled sign-in complaints. Users must re-authenticate from scratch every time they open the app.</p>
+      </div>
+      <div class="finding-row">
+        <div class="finding-badge med">Med</div>
+        <p class="finding-text"><strong style="color:var(--text)">Cluttered homepage</strong> — 20 equally-sized icon tiles on the home screen with no hierarchy. Users struggle to find barcode access and event booking.</p>
+      </div>
+      <div class="finding-row">
+        <div class="finding-badge med">Med</div>
+        <p class="finding-text"><strong style="color:var(--text)">Inefficient booking system</strong> — Event sign-up is cumbersome and confusing. Staff receive frequent calls and in-person visits asking about schedules.</p>
+      </div>
+      <div class="finding-row">
+        <div class="finding-badge low">Low</div>
+        <p class="finding-text"><strong style="color:var(--text)">Limited push notifications</strong> — Users miss class cancellations, waitlist updates, and event openings due to untimely or irrelevant alerts.</p>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">New design — screen mockups</p>
+    </div>
+    <div class="screens-row">
+      <div>
+        <div class="screen-card">
+          <div class="screen-top"></div>
+          <div class="screen-body">
+            <div class="screen-title">REC CENTER</div>
+            <div class="screen-item">
+              <div class="screen-item-label">🕐 Today's Hours</div>
+              <div class="screen-item-sub">Main Gym: 6 AM – 11:30 PM</div>
+            </div>
+            <div class="screen-item">
+              <div class="screen-item-label">📅 Next Activity</div>
+              <div class="screen-item-sub">Zumba | 12:00 – 1:00 PM</div>
+            </div>
+            <div class="screen-item">
+              <div class="screen-item-label">⬛ Digital ID</div>
+              <div class="screen-item-sub">Check-In QR Code</div>
+            </div>
+          </div>
+          <div class="screen-nav">
+            <div class="nav-icon"><div class="nav-icon-symbol">🏠</div><div class="nav-icon-text">Home</div></div>
+            <div class="nav-icon"><div class="nav-icon-symbol">🏋</div><div class="nav-icon-text">Classes</div></div>
+            <div class="nav-icon"><div class="nav-icon-symbol">🏢</div><div class="nav-icon-text">Facilities</div></div>
+            <div class="nav-icon"><div class="nav-icon-symbol">👤</div><div class="nav-icon-text">Profile</div></div>
+          </div>
+        </div>
+        <p class="screen-footer-label">Home</p>
+      </div>
+
+      <div>
+        <div class="screen-card">
+          <div class="screen-top"></div>
+          <div class="screen-body">
+            <div class="screen-title">GROUP CLASSES</div>
+            <div style="font-size:8px;color:var(--text2);margin-bottom:6px">April 2025 · Reserve →</div>
+            <div class="screen-item" style="border-color:rgba(29,158,117,0.4);background:rgba(29,158,117,0.1)">
+              <div class="screen-item-label" style="color:#5dcaa5">Ride Fusion</div>
+              <div class="screen-item-sub">7:30 – 8:30 AM</div>
+            </div>
+            <div style="height:16px"></div>
+            <div class="screen-item" style="border-color:rgba(29,158,117,0.4);background:rgba(29,158,117,0.1)">
+              <div class="screen-item-label" style="color:#5dcaa5">Mat Pilates</div>
+              <div class="screen-item-sub">10:15 – 11:15 AM</div>
+            </div>
+          </div>
+          <div class="screen-nav">
+            <div class="nav-icon"><div class="nav-icon-symbol">🏠</div><div class="nav-icon-text">Home</div></div>
+            <div class="nav-icon"><div class="nav-icon-symbol" style="opacity:1">🏋</div><div class="nav-icon-text" style="color:#fff">Classes</div></div>
+            <div class="nav-icon"><div class="nav-icon-symbol">🏢</div><div class="nav-icon-text">Facilities</div></div>
+            <div class="nav-icon"><div class="nav-icon-symbol">👤</div><div class="nav-icon-text">Profile</div></div>
+          </div>
+        </div>
+        <p class="screen-footer-label">Schedule</p>
+      </div>
+
+      <div>
+        <div class="screen-card">
+          <div class="screen-top"></div>
+          <div class="screen-body">
+            <div class="screen-title">FACILITIES</div>
+            <div style="font-size:8px;color:var(--text2);margin-bottom:8px;font-weight:600">Live Occupancy</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px">
+              <div style="background:rgba(29,158,117,0.12);border:1px solid rgba(29,158,117,0.3);border-radius:4px;padding:5px;text-align:center">
+                <div style="font-size:7px;color:#5dcaa5;font-weight:700">Sauna</div>
+                <div style="font-size:7px;color:var(--text2)">40%</div>
+              </div>
+              <div style="background:rgba(239,159,39,0.12);border:1px solid rgba(239,159,39,0.3);border-radius:4px;padding:5px;text-align:center">
+                <div style="font-size:7px;color:var(--amber);font-weight:700">Weight Rm</div>
+                <div style="font-size:7px;color:var(--text2)">75%</div>
+              </div>
+            </div>
+            <div style="font-size:8px;color:var(--text2);margin-bottom:5px;font-weight:600">Live Cams</div>
+            <div class="screen-item"><div class="screen-item-label">Main Gym</div></div>
+            <div class="screen-item"><div class="screen-item-label">1st Floor Weight</div></div>
+          </div>
+          <div class="screen-nav">
+            <div class="nav-icon"><div class="nav-icon-symbol">🏠</div><div class="nav-icon-text">Home</div></div>
+            <div class="nav-icon"><div class="nav-icon-symbol">🏋</div><div class="nav-icon-text">Classes</div></div>
+            <div class="nav-icon"><div class="nav-icon-symbol" style="opacity:1">🏢</div><div class="nav-icon-text" style="color:#fff">Facilities</div></div>
+            <div class="nav-icon"><div class="nav-icon-symbol">👤</div><div class="nav-icon-text">Profile</div></div>
+          </div>
+        </div>
+        <p class="screen-footer-label">Facilities</p>
+      </div>
+
+      <div>
+        <div class="screen-card">
+          <div class="screen-top"></div>
+          <div class="screen-body">
+            <div class="screen-title">SIGN IN</div>
+            <div style="height:12px"></div>
+            <div style="background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:5px;padding:7px 8px;margin-bottom:6px">
+              <div style="font-size:8px;color:var(--text2)">School Email...</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:5px;padding:7px 8px;margin-bottom:8px">
+              <div style="font-size:8px;color:var(--text2)">NetID Password...</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:5px;margin-bottom:10px">
+              <div style="width:10px;height:10px;border:1px solid var(--border2);border-radius:2px;background:rgba(127,119,221,0.3)"></div>
+              <div style="font-size:8px;color:var(--text2)">Remember Login</div>
+            </div>
+            <div style="background:#1a6e4e;border-radius:5px;padding:7px;text-align:center;font-size:8px;color:#fff;font-weight:700">Sign In with CSU SSO</div>
+          </div>
+          <div style="height:8px;background:#1a6e4e;border-bottom-left-radius:10px;border-bottom-right-radius:10px"></div>
+        </div>
+        <p class="screen-footer-label">Login</p>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">New features delivered</p>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon purple">🔑</div>
+          <h3>Persistent QR code</h3>
+          <p>One permanent QR code per student that doesn't regenerate on every visit. Resolves the #1 pain point reported by both staff and members.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon teal">📱</div>
+          <h3>Simplified navigation</h3>
+          <p>Replaced 20-icon grid with 4 clear tabs: Home, Classes, Facilities, Profile. Search bar provides discoverability without clutter.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon coral">🔔</div>
+          <h3>Smart notifications</h3>
+          <p>Customizable alerts for class cancellations, waitlist changes, and intramural season opens — without overwhelming users.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon amber">📈</div>
+          <h3>Live occupancy</h3>
+          <p>Gym traffic data (already collected and posted to the website) surfaced directly in the app. Facility counts visible side-by-side with live camera feeds.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">System requirements (SRS)</p>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon purple">⚡</div>
+          <h3>Performance</h3>
+          <p>App launch ≤ 5 sec. Login with saved credentials ≤ 5 sec. System handles 1,000 concurrent users. Background sync must not affect battery.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon teal">🛡</div>
+          <h3>Security</h3>
+          <p>CSU SSO + Duo 2FA integration. Role-based permissions (admin/student/staff). Encrypted stored credentials. Password field masking with reveal toggle.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon coral">📐</div>
+          <h3>Design constraints</h3>
+          <p>iOS and Android compatible. React Native shared codebase. Max 80 MB storage footprint. Must support one-handed use. Screen reader accessible.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon amber">🔄</div>
+          <h3>Reliability</h3>
+          <p>Max 1 crash per 10,000 sessions. 99.9% uptime during rec hours (6 AM – 11:30 PM). Failed syncs auto-retry. Bookings confirmed even on poor connections.</p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <div class="cards-section">
+      <p class="section-label">Technology stack</p>
+    </div>
+    <div class="tech-stack">
+      <span class="tech-pill">React Native</span>
+      <span class="tech-pill">Node.js</span>
+      <span class="tech-pill">CSU SSO</span>
+      <span class="tech-pill">Duo 2FA</span>
+      <span class="tech-pill">Firebase Cloud Messaging</span>
+      <span class="tech-pill">Apple Push Notification Service</span>
+      <span class="tech-pill">GitHub</span>
+      <span class="tech-pill">Canva (mockups)</span>
+      <span class="tech-pill">JSON API</span>
+    </div>
+
+    <div style="height:48px"></div>
+  </div>
+</div>
+
+<script>
+function enterPortfolio() {
+  document.getElementById('splash').classList.add('out');
+  const main = document.getElementById('main');
+  main.style.display = 'block';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => main.classList.add('in'));
+  });
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
