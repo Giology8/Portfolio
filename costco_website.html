@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Costco — The Invisible Opportunity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --navy: #0a1628;
+    --red: #e0281e;
+    --red-light: #fdf1f0;
+    --slate: #2c3e50;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --bg: #fafafa;
+    --white: #ffffff;
+    --accent: #1a56db;
+    --accent-light: #eff6ff;
+    --green: #15803d;
+    --green-light: #f0fdf4;
+    --amber: #b45309;
+    --amber-light: #fffbeb;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--slate);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  h1,h2,h3,h4 { font-family: 'Libre Baskerville', serif; font-weight: 700; color: var(--navy); }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2.5rem; height: 60px;
+  }
+  .nav-brand { font-family: 'Libre Baskerville', serif; font-size: 14px; font-weight: 700; color: var(--navy); letter-spacing: 0.05em; text-transform: uppercase; }
+  .nav-brand span { color: var(--red); }
+  .nav-links { display: flex; gap: 0; }
+  .nav-links a {
+    font-size: 12.5px; font-weight: 400; color: var(--muted);
+    text-decoration: none; padding: 0 1rem; height: 60px;
+    display: flex; align-items: center; border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s; letter-spacing: 0.02em;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--navy); border-bottom-color: var(--red); }
+
+  /* ── SECTIONS ── */
+  section { padding: 5rem 0; }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 2.5rem; }
+  .section-label {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--red);
+    margin-bottom: 0.75rem;
+  }
+  .section-title { font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.2; margin-bottom: 1rem; }
+  .section-sub { font-size: 1rem; color: var(--muted); max-width: 620px; line-height: 1.75; }
+  .divider { width: 40px; height: 3px; background: var(--red); margin: 1.5rem 0; border-radius: 2px; }
+
+  /* ── HERO ── */
+  #hero {
+    padding-top: 120px; padding-bottom: 80px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    position: relative; overflow: hidden;
+  }
+  #hero::before {
+    content: ''; position: absolute; right: -100px; top: -60px;
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(224,40,30,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.5rem; }
+  .hero-title { font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1.1; color: var(--navy); max-width: 820px; }
+  .hero-title em { font-style: italic; color: var(--red); }
+  .hero-body { font-size: 1.1rem; color: var(--muted); max-width: 580px; margin-top: 1.5rem; line-height: 1.8; }
+  .hero-stats { display: flex; gap: 2.5rem; margin-top: 3rem; flex-wrap: wrap; }
+  .hero-stat { border-left: 3px solid var(--border); padding-left: 1.25rem; }
+  .hero-stat-val { font-family: 'Libre Baskerville', serif; font-size: 1.9rem; font-weight: 700; color: var(--navy); }
+  .hero-stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .hero-scroll { margin-top: 3.5rem; display: flex; align-items: center; gap: 0.75rem; font-size: 12px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .hero-scroll-line { width: 40px; height: 1px; background: var(--muted); }
+
+  /* ── COMPANY ── */
+  #company { background: var(--white); }
+  .timeline { margin-top: 2.5rem; border-left: 2px solid var(--border); padding-left: 2rem; }
+  .timeline-item { position: relative; margin-bottom: 2rem; }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -2.45rem; top: 6px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--white); border: 2px solid var(--red);
+  }
+  .timeline-year { font-size: 11px; font-weight: 500; color: var(--red); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.2rem; }
+  .timeline-text { font-size: 0.95rem; color: var(--slate); }
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+  .info-card {
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.4rem; background: var(--bg);
+  }
+  .info-card-label { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+  .info-card-val { font-family: 'Libre Baskerville', serif; font-size: 1.5rem; font-weight: 700; color: var(--navy); }
+  .info-card-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* ── TWO COL ── */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  @media (max-width: 720px) { .two-col { grid-template-columns: 1fr; gap: 2rem; } }
+
+  /* ── CHART CARD ── */
+  .chart-card {
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.75rem; background: var(--white); margin-top: 2rem;
+  }
+  .chart-card-title { font-size: 13px; font-weight: 500; color: var(--navy); margin-bottom: 0.3rem; }
+  .chart-finding {
+    font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 1rem;
+    padding: 0.75rem 1rem; background: var(--bg); border-radius: 6px;
+    border-left: 3px solid var(--red);
+  }
+  .expand-btn {
+    font-size: 12px; color: var(--accent); background: none; border: none;
+    cursor: pointer; padding: 0; margin-top: 0.5rem; text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .expand-content { display: none; font-size: 13px; color: var(--muted); line-height: 1.65; margin-top: 0.75rem; }
+  .expand-content.open { display: block; }
+
+  /* ── PROBLEM SECTION ── */
+  #problem { background: var(--bg); }
+  .pull-quote {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+    line-height: 1.4; color: var(--navy); font-weight: 700;
+    border-left: 4px solid var(--red); padding-left: 1.75rem;
+    margin: 2.5rem 0;
+  }
+  .insight-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+  .insight-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.5rem;
+  }
+  .insight-tag {
+    display: inline-block; font-size: 10px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 4px; margin-bottom: 0.8rem;
+  }
+  .tag-red { background: var(--red-light); color: var(--red); }
+  .tag-blue { background: var(--accent-light); color: var(--accent); }
+  .tag-amber { background: var(--amber-light); color: var(--amber); }
+  .tag-green { background: var(--green-light); color: var(--green); }
+  .insight-card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
+  .insight-card p { font-size: 13.5px; color: var(--muted); }
+
+  /* ── EVIDENCE ── */
+  #evidence { background: var(--white); }
+  .big-number { font-family: 'Libre Baskerville', serif; font-size: 3.5rem; font-weight: 700; color: var(--navy); line-height: 1; }
+  .big-number-label { font-size: 13px; color: var(--muted); margin-top: 0.4rem; }
+  .competitor-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; font-size: 13.5px; }
+  .competitor-table th {
+    text-align: left; font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muted); padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .competitor-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); color: var(--slate); }
+  .competitor-table tr:last-child td { border-bottom: none; }
+  .competitor-table tr.highlight td { background: #fdf8f2; font-weight: 500; }
+  .pill {
+    display: inline-block; font-size: 11px; font-weight: 500;
+    padding: 2px 8px; border-radius: 20px;
+  }
+  .pill-green { background: var(--green-light); color: var(--green); }
+  .pill-red { background: var(--red-light); color: var(--red); }
+  .pill-amber { background: var(--amber-light); color: var(--amber); }
+
+  /* ── FRAMEWORKS ── */
+  #frameworks { background: var(--bg); }
+  .tab-nav { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; overflow-x: auto; }
+  .tab-btn {
+    font-size: 13px; font-weight: 400; color: var(--muted); background: none;
+    border: none; border-bottom: 2px solid transparent; padding: 0.75rem 1.25rem;
+    cursor: pointer; white-space: nowrap; transition: all 0.2s;
+  }
+  .tab-btn.active { color: var(--navy); border-bottom-color: var(--red); font-weight: 500; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .framework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+  .fw-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.25rem;
+  }
+  .fw-card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; }
+  .fw-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .fw-dot-red { background: var(--red); }
+  .fw-dot-blue { background: var(--accent); }
+  .fw-dot-green { background: var(--green); }
+  .fw-dot-amber { background: var(--amber); }
+  .fw-card h4 { font-size: 13px; font-weight: 500; color: var(--navy); }
+  .fw-card p { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+
+  /* ── RECOMMENDATION ── */
+  #recommendation { background: var(--navy); color: var(--white); }
+  #recommendation h2, #recommendation h3, #recommendation h4 { color: var(--white); }
+  #recommendation .section-label { color: #f87171; }
+  #recommendation .section-sub { color: rgba(255,255,255,0.65); }
+  .rec-phase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+  .rec-phase {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px; padding: 1.5rem;
+  }
+  .rec-phase-num { font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #f87171; margin-bottom: 0.5rem; }
+  .rec-phase h4 { font-size: 1.05rem; margin-bottom: 0.5rem; }
+  .rec-phase p { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+  .rec-phase ul { list-style: none; margin-top: 0.75rem; }
+  .rec-phase ul li { font-size: 13px; color: rgba(255,255,255,0.65); padding: 0.2rem 0; padding-left: 1rem; position: relative; }
+  .rec-phase ul li::before { content: '—'; position: absolute; left: 0; color: #f87171; }
+  .risk-row { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .risk-row:last-child { border-bottom: none; }
+  .risk-label { font-size: 13px; font-weight: 500; color: var(--white); min-width: 200px; }
+  .risk-text { font-size: 13px; color: rgba(255,255,255,0.55); }
+
+  /* ── SOURCES ── */
+  #sources { background: var(--bg); }
+  .source-list { list-style: none; margin-top: 1.5rem; }
+  .source-list li { font-size: 13px; color: var(--muted); padding: 0.4rem 0; border-bottom: 1px solid var(--border); }
+  .source-list li:last-child { border-bottom: none; }
+  .source-list a { color: var(--accent); text-decoration: none; }
+  .source-list a:hover { text-decoration: underline; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy); color: rgba(255,255,255,0.4);
+    text-align: center; padding: 2rem; font-size: 12px;
+  }
+  .legend-row { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 12px; font-size: 12px; color: var(--muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 4px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-brand"><span>Costco</span> — The Invisible Opportunity</div>
+  <div class="nav-links">
+    <a href="#company">The Company</a>
+    <a href="#problem">The Problem</a>
+    <a href="#evidence">The Evidence</a>
+    <a href="#frameworks">Analysis</a>
+    <a href="#recommendation">Recommendation</a>
+    <a href="#sources">Sources</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <p class="hero-eyebrow">Strategic Analysis · FY2019 – FY2024</p>
+    <h1 class="hero-title">Everyone shops at Costco.<br><em>Nobody shops Costco online.</em></h1>
+    <p class="hero-body">Costco has built one of the most loyal customer bases in retail history. Yet 76 million paying members largely don't know — or don't use — its digital storefront. That gap is the opportunity.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-val">$254.5B</div>
+        <div class="hero-stat-label">FY2024 total revenue</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">76M</div>
+        <div class="hero-stat-label">Paid members, FY2024</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">90.5%</div>
+        <div class="hero-stat-label">Worldwide renewal rate</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-val">~7%</div>
+        <div class="hero-stat-label">E-commerce share of revenue</div>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span class="hero-scroll-line"></span>
+      Scroll to explore
+    </div>
+  </div>
+</section>
+
+<!-- COMPANY -->
+<section id="company">
+  <div class="container">
+    <p class="section-label">Act I</p>
+    <h2 class="section-title">Who is Costco?</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Costco isn't just a warehouse club. It's a membership flywheel — where loyalty funds low prices, and low prices fund more loyalty.</p>
+
+    <div class="two-col" style="margin-top: 3rem;">
+      <div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 1.5rem;">How it started</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-year">1983</div>
+            <div class="timeline-text">First Costco warehouse opens in Seattle. Founders bet that a membership fee could replace retail markup as the profit engine.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">1993</div>
+            <div class="timeline-text">Merger with Price Club creates the world's largest warehouse club operator.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2000s</div>
+            <div class="timeline-text">Kirkland Signature private label launches. It now accounts for over 25% of merchandise sales and rivals global brand revenues.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2017</div>
+            <div class="timeline-text">Costco ends its AmEx deal and launches the co-branded Citi Visa card — deepening digital payment data on members.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2019</div>
+            <div class="timeline-text">E-commerce represents ~4% of net sales. Comparable digital sales grow but the platform lags competitors in UX and awareness.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2024</div>
+            <div class="timeline-text">E-commerce hits $17.5B — up from $6B in 2019. Growing fast, but still deeply underweight given the member base size.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 1.5rem;">The business model</h3>
+        <p style="font-size: 0.95rem; color: var(--muted); line-height: 1.8;">Costco operates on a model most retailers would consider suicidal: merchandise is sold near cost. The actual profit engine is the <strong style="color: var(--navy);">membership fee</strong>.</p>
+        <p style="font-size: 0.95rem; color: var(--muted); line-height: 1.8; margin-top: 1rem;">In FY2019, membership fees were $3.35B — just 2.2% of total revenue. But they covered roughly 72% of operating income. By FY2024, fees grew to $4.83B, with 76 million paid members and a 90.5% worldwide renewal rate.</p>
+        <p style="font-size: 0.95rem; color: var(--muted); line-height: 1.8; margin-top: 1rem;">The implication is striking: Costco doesn't need to maximize margin on every sale. It needs to maximize <em>member satisfaction</em>. That creates a structural opening for digital expansion that most retailers don't have.</p>
+        <div class="info-grid" style="margin-top: 1.5rem;">
+          <div class="info-card">
+            <div class="info-card-label">FY2024 membership fees</div>
+            <div class="info-card-val">$4.83B</div>
+            <div class="info-card-sub">Up from $3.35B in FY2019</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">Warehouses worldwide</div>
+            <div class="info-card-val">890</div>
+            <div class="info-card-sub">As of FY2024 year-end</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">US/Canada renewal rate</div>
+            <div class="info-card-val">92.9%</div>
+            <div class="info-card-sub">FY2024 — record high</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-label">Revenue CAGR (2015–2024)</div>
+            <div class="info-card-val">~9.1%</div>
+            <div class="info-card-sub">$116B → $254.5B</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue growth chart -->
+    <div class="chart-card">
+      <div class="chart-card-title">Revenue trajectory: FY2017 – FY2024 ($B)</div>
+      <p class="chart-finding">Costco's total revenue nearly doubled in seven years — but membership fee revenue, the real profit engine, grew even faster in relative terms. The question is: is there an untapped digital multiplier hiding in this loyal base?</p>
+      <button class="expand-btn" onclick="toggleExpand(this)">+ Read deeper analysis</button>
+      <div class="expand-content">
+        From $129B in FY2017 to $254.5B in FY2024, Costco's revenue compounded at ~9.1% annually — remarkably consistent for a company this size. Notably, operating margins remained thin (3–3.5%) throughout, validating the "sell at cost, profit from fees" model. What this chart doesn't show is <em>where</em> future growth comes from. Physical warehouse expansion has slowing returns as prime locations fill up. The digital channel, currently ~7% of sales, is the logical next frontier.
+      </div>
+      <div class="legend-row" style="margin-top: 1rem;">
+        <span><span class="legend-dot" style="background:#0a1628;"></span>Net Sales</span>
+        <span><span class="legend-dot" style="background:#e0281e;"></span>Membership Fees</span>
+      </div>
+      <div style="position: relative; width: 100%; height: 300px;">
+        <canvas id="revChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <p class="section-label">Act II</p>
+    <h2 class="section-title">The strategic challenge</h2>
+    <div class="divider"></div>
+
+    <div class="pull-quote">"Costco's online prices are often higher than in-store. Most members don't know the site exists. And Sam's Club is lapping them on digital."</div>
+
+    <p class="section-sub">Costco has built the most loyal membership base in retail — and then left it largely untouched by digital strategy. That's both a problem and an enormous opportunity.</p>
+
+    <div class="insight-grid">
+      <div class="insight-card">
+        <span class="insight-tag tag-red">Awareness Gap</span>
+        <h4>Members don't know they can shop online</h4>
+        <p>Costco spends virtually nothing on digital marketing compared to Walmart or Sam's Club. Its social media presence is minimal. Most members associate Costco with the warehouse experience — not an e-commerce platform.</p>
+      </div>
+      <div class="insight-card">
+        <span class="insight-tag tag-amber">Competitive Pressure</span>
+        <h4>Sam's Club is betting everything on digital</h4>
+        <p>Walmart CEO called Sam's Club the company's "innovation engine." Sam's has built scan-and-go checkout, curbside pickup at scale, and a digital-first membership model. Costco risks ceding the digital member to a well-funded rival.</p>
+      </div>
+      <div class="insight-card">
+        <span class="insight-tag tag-blue">Structural Tension</span>
+        <h4>The warehouse model discourages online</h4>
+        <p>Costco's economics are built around driving foot traffic — a member who shops online instead of in-store buys fewer impulse items, skips food courts, and requires costly fulfillment. But resisting digital means leaving the next generation of shoppers behind.</p>
+      </div>
+      <div class="insight-card">
+        <span class="insight-tag tag-green">The Signal</span>
+        <h4>When members find it, they love it</h4>
+        <p>E-commerce comparable sales grew 16% in FY2024 and 20.7% in Q3 alone. Costco Logistics delivered 4.5M items — up 29%. The product is improving. The bottleneck is awareness and digital marketing investment, not the platform itself.</p>
+      </div>
+    </div>
+
+    <!-- E-comm growth vs total comps -->
+    <div class="chart-card">
+      <div class="chart-card-title">E-commerce comparable sales growth vs. total comparable sales — FY2019 to FY2024</div>
+      <p class="chart-finding">In every year except FY2023 (post-pandemic correction), Costco's digital channel grew faster than its physical stores. Yet it still represents only ~7% of total revenue — a clear sign of underinvestment in channeling members online.</p>
+      <button class="expand-btn" onclick="toggleExpand(this)">+ Read deeper analysis</button>
+      <div class="expand-content">
+        The FY2020–2021 surge (40%+ e-commerce growth) was pandemic-driven, but the structural growth rate beneath it — 13–20% in FY2024 — is real and durable. The FY2023 dip to -6% reflects post-COVID normalization, not a strategic failure. What's critical: even at 16% e-commerce growth in FY2024, Costco's online revenue ($17.5B) is a fraction of what Walmart ($83B+) or Amazon ($600B+) generate. The gap is not from product quality — it's from discoverability and digital marketing spend.
+      </div>
+      <div class="legend-row" style="margin-top: 1rem;">
+        <span><span class="legend-dot" style="background:#0a1628;"></span>E-commerce comp sales growth</span>
+        <span><span class="legend-dot" style="background:#9ca3af;"></span>Total comp sales growth</span>
+      </div>
+      <div style="position: relative; width: 100%; height: 300px;">
+        <canvas id="ecommChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVIDENCE -->
+<section id="evidence">
+  <div class="container">
+    <p class="section-label">Act III — The Evidence</p>
+    <h2 class="section-title">What the numbers say</h2>
+    <div class="divider"></div>
+    <p class="section-sub">A data-driven look at where Costco's digital gap is largest — and what it's costing them.</p>
+
+    <div class="two-col" style="margin-top: 2.5rem;">
+      <div>
+        <div class="big-number">~7%</div>
+        <div class="big-number-label">E-commerce as share of Costco's total revenue (FY2024)</div>
+        <p style="font-size: 13.5px; color: var(--muted); margin-top: 1rem; line-height: 1.7;">By comparison, Walmart's e-commerce share has grown to nearly 18% of total US sales. Amazon is functionally an e-commerce-only retailer. Even BJ's Wholesale, with a fraction of Costco's resources, outpaces Costco in online grocery market share.</p>
+        <div class="chart-card" style="margin-top: 1.5rem;">
+          <div class="chart-card-title">E-commerce revenue growth: FY2019 → FY2024 ($B)</div>
+          <p class="chart-finding">Online revenue tripled from $6B to $17.5B — but still represents a small slice of the member base's full spending potential.</p>
+          <button class="expand-btn" onclick="toggleExpand(this)">+ Read deeper analysis</button>
+          <div class="expand-content">
+            The tripling of e-commerce revenue from 2019 to 2024 is impressive — but it happened largely organically, without aggressive digital marketing. The counterfactual is striking: if Costco's 76 million members each made just one additional online purchase per year at an average $150, that's $11.4B in incremental revenue. A targeted digital awareness campaign doesn't need to capture all of that — even 10% would be $1.1B.
+          </div>
+          <div style="position: relative; width: 100%; height: 220px; margin-top: 1rem;">
+            <canvas id="erevChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size: 1.15rem; margin-bottom: 1.25rem;">Competitor digital positioning</h3>
+        <table class="competitor-table">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>E-comm % of Sales</th>
+              <th>Digital Strategy</th>
+              <th>Positioning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Amazon</strong></td>
+              <td>~70%</td>
+              <td>Pure-play digital; logistics moat</td>
+              <td><span class="pill pill-green">Leader</span></td>
+            </tr>
+            <tr>
+              <td><strong>Walmart</strong></td>
+              <td>~18%</td>
+              <td>Omnichannel; pickup & delivery at scale</td>
+              <td><span class="pill pill-green">Advancing</span></td>
+            </tr>
+            <tr>
+              <td><strong>Target</strong></td>
+              <td>~18%</td>
+              <td>Same-day drive-up; strong app</td>
+              <td><span class="pill pill-green">Advancing</span></td>
+            </tr>
+            <tr>
+              <td><strong>Sam's Club</strong></td>
+              <td>~15%</td>
+              <td>Scan-and-go; curbside; digital-first membership</td>
+              <td><span class="pill pill-amber">Growing fast</span></td>
+            </tr>
+            <tr class="highlight">
+              <td><strong>Costco</strong></td>
+              <td>~7%</td>
+              <td>Organic growth; limited digital marketing</td>
+              <td><span class="pill pill-red">Underweight</span></td>
+            </tr>
+            <tr>
+              <td><strong>BJ's Wholesale</strong></td>
+              <td>~5%</td>
+              <td>BOPIS investment; smaller scale</td>
+              <td><span class="pill pill-amber">Catching up</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size: 12px; color: var(--muted); margin-top: 0.75rem; font-style: italic;">Sources: company filings, Digital Commerce 360, Nasdaq. E-comm % estimates for FY2024.</p>
+
+        <div class="chart-card" style="margin-top: 1.5rem;">
+          <div class="chart-card-title">Operating margin trend: FY2017 – FY2024 (%)</div>
+          <p class="chart-finding">Thin margins (3–3.5%) have remained stable. Digital sales typically carry higher margins — expanding online could improve this over time.</p>
+          <button class="expand-btn" onclick="toggleExpand(this)">+ Read deeper analysis</button>
+          <div class="expand-content">
+            Costco's operating margin has held remarkably steady at 3.0–3.5% across seven years, which is by design — the model deliberately operates near break-even on merchandise. What's notable is that e-commerce categories (appliances, electronics, big-ticket items) tend to carry higher margins than gasoline, which accounts for ~11% of net sales and suppresses overall margin. A structural shift toward higher-ticket digital sales could be the first time Costco's margins move meaningfully upward without compromising its price-value promise.
+          </div>
+          <div style="position: relative; width: 100%; height: 200px; margin-top: 1rem;">
+            <canvas id="marginChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Membership flywheel chart -->
+    <div class="chart-card">
+      <div class="chart-card-title">Paid memberships and renewal rate: FY2019 – FY2024</div>
+      <p class="chart-finding">Membership grew from 53.9M to 76M paid members, with renewal rates consistently above 88%. This installed base is Costco's greatest digital asset — and its most underutilized one.</p>
+      <button class="expand-btn" onclick="toggleExpand(this)">+ Read deeper analysis</button>
+      <div class="expand-content">
+        The combination of membership growth (+41% from FY2019 to FY2024) and 90%+ renewal rates is extraordinary — it means the base is both expanding and sticky. For digital strategy, this is the key insight: Costco doesn't need to acquire new customers to grow online. It needs to activate the members it already has. A targeted digital marketing campaign to the existing 76M member base is far more cost-effective than competing with Amazon for new users on Google or Meta.
+      </div>
+      <div class="legend-row" style="margin-top: 1rem;">
+        <span><span class="legend-dot" style="background:#0a1628;"></span>Paid members (M, left axis)</span>
+        <span><span class="legend-dot" style="background:#e0281e;"></span>US/Canada renewal rate % (right axis)</span>
+      </div>
+      <div style="position: relative; width: 100%; height: 280px;">
+        <canvas id="memberChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FRAMEWORKS -->
+<section id="frameworks">
+  <div class="container">
+    <p class="section-label">Act III continued — Analysis</p>
+    <h2 class="section-title">The strategic context</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Using established frameworks to understand the forces shaping Costco's digital opportunity — and the risks of inaction.</p>
+
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="showTab('porter')">Competitive forces</button>
+      <button class="tab-btn" onclick="showTab('swot')">Strengths & gaps</button>
+      <button class="tab-btn" onclick="showTab('capabilities')">Internal capabilities</button>
+      <button class="tab-btn" onclick="showTab('external')">External environment</button>
+    </div>
+
+    <div id="tab-porter" class="tab-panel active">
+      <p style="font-size: 13.5px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.7;">Five forces shape the competitive logic of warehouse retail — and each one is shifting in ways that make Costco's digital gap more urgent.</p>
+      <div class="framework-grid">
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-red"></div><h4>Threat of new entrants — Low</h4></div>
+          <p>Building a membership warehouse network at Costco's scale requires billions in capital and decades of brand trust. New entrants can't replicate this. However, <em>digital-native</em> entrants (Amazon, Temu) can target Costco members online without warehouses — raising the urgency of a stronger digital presence.</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-amber"></div><h4>Bargaining power of buyers — Medium & rising</h4></div>
+          <p>Members have historically low price sensitivity due to the value proposition, but younger members (Millennials, Gen Z) have higher digital expectations and are more willing to comparison shop online. Costco risks losing this cohort to platforms with better UX.</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-blue"></div><h4>Bargaining power of suppliers — Low</h4></div>
+          <p>Costco's scale gives it extraordinary leverage over suppliers. This extends to e-commerce: exclusive online deals and digital-only SKUs are a realistic strategy that suppliers would welcome given Costco's traffic volume. A stronger digital platform amplifies this advantage.</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-red"></div><h4>Threat of substitutes — High & accelerating</h4></div>
+          <p>Amazon Prime is the closest substitute to Costco's membership model — and it's digital-first. The risk isn't that Costco loses existing warehouse shoppers. It's that the next generation of "members" chooses Prime over Costco because they never develop the in-store habit.</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-amber"></div><h4>Competitive rivalry — Intensifying</h4></div>
+          <p>Sam's Club is the most direct digital threat. Backed by Walmart's technology investment and logistics network, it has made scan-and-go, curbside, and digital membership its core strategy. Walmart CEO has called it the company's "innovation engine." Costco's relative inaction is a strategic risk.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-swot" class="tab-panel">
+      <div class="framework-grid">
+        <div class="fw-card" style="border-top: 3px solid var(--green);">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-green"></div><h4>Strengths</h4></div>
+          <p>90%+ renewal rates = a captive audience for digital activation. Kirkland Signature brand commands loyalty beyond competitors. Thin-margin philosophy means digital expansion doesn't require repricing. $4.83B membership revenue base funds investment. Instacart partnership already provides infrastructure for same-day delivery.</p>
+        </div>
+        <div class="fw-card" style="border-top: 3px solid var(--red);">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-red"></div><h4>Weaknesses</h4></div>
+          <p>Digital marketing budget is minimal compared to peers. Website UX historically lagged — online prices sometimes higher than in-store. Limited BOPIS (buy online, pick up in store) capability vs Sam's Club. Brand awareness for online channel is almost zero among existing members.</p>
+        </div>
+        <div class="fw-card" style="border-top: 3px solid var(--accent);">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-blue"></div><h4>Opportunities</h4></div>
+          <p>76M paid members who are already loyal — the lowest-CAC audience in retail. E-commerce growing 16–20% YoY with limited marketing support. International expansion creates new digital-native member cohorts. Executive members (74%+ of sales) are high-income and digital-capable. Costco Logistics scaling 29% YoY.</p>
+        </div>
+        <div class="fw-card" style="border-top: 3px solid var(--amber);">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-amber"></div><h4>Threats</h4></div>
+          <p>Sam's Club investing aggressively in digital. Amazon Prime offers an alternative "membership" model. Younger shoppers default to digital-first retailers. Online members renew at slightly lower rates than warehouse sign-ups — a structural warning signal to watch. Tariff and macro headwinds affecting discretionary categories.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-capabilities" class="tab-panel">
+      <p style="font-size: 13.5px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.7;">Assessing Costco's internal resources through a VRIO lens — what can they leverage for digital expansion that competitors can't easily copy?</p>
+      <div class="framework-grid">
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-green"></div><h4>Member data & trust — Sustained advantage</h4></div>
+          <p>Costco's closed membership system means 100% of purchases are tied to an identity. This first-party data is Valuable, Rare, and hard to Imitate. In an era of cookie deprecation, this is a marketing asset worth billions — if leveraged for digital targeting.</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-green"></div><h4>Kirkland Signature — Sustained advantage</h4></div>
+          <p>The Kirkland brand is a moat that no competitor has replicated. It drives higher margins online than branded products and serves as a reason to shop Costco digitally rather than substituting with Amazon. This is the centerpiece of any digital marketing campaign.</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-amber"></div><h4>Fulfillment infrastructure — Temporary advantage</h4></div>
+          <p>Costco Logistics (4.5M deliveries in FY2024, up 29%) is scaling. The Instacart partnership handles grocery last-mile. But both are nascent vs Walmart's 4,600-store fulfillment network. The advantage is real but fragile without continued investment.</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-red"></div><h4>Digital marketing capability — Competitive disadvantage</h4></div>
+          <p>Costco's digital marketing spend and sophistication are meaningfully below peers. No significant social media ad presence. Costco's own data shows Meta drives 93.4% of social checkout traffic — but they're not maximizing this channel. This is the clearest capability gap to address.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-external" class="tab-panel">
+      <p style="font-size: 13.5px; color: var(--muted); margin-bottom: 1.5rem; line-height: 1.7;">The macro environment shapes both the urgency and the feasibility of Costco's digital move. Key forces are aligned in Costco's favor — but the window may not stay open.</p>
+      <div class="framework-grid">
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-blue"></div><h4>Technological</h4></div>
+          <p>Cookie deprecation and ad privacy changes make first-party member data more valuable, not less. Costco's closed membership system is structurally positioned for the privacy-first advertising era — but only if they build the digital marketing infrastructure to use it.</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-green"></div><h4>Economic</h4></div>
+          <p>Inflation and value-seeking behavior pushed younger demographics toward Costco for the first time in FY2022–2023. Many shopped in-store but never discovered the online channel. A targeted digital campaign to this cohort, while their loyalty is still forming, is high-ROI.</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-amber"></div><h4>Social</h4></div>
+          <p>Millennials and Gen Z shop digitally first and physically second. They are becoming the core membership demographic. Costco's in-store-first model risks being perceived as "for parents" rather than a lifestyle brand — unless digital marketing actively reshapes that perception.</p>
+        </div>
+        <div class="fw-card">
+          <div class="fw-card-header"><div class="fw-dot fw-dot-red"></div><h4>Competitive</h4></div>
+          <p>Sam's Club is the existential digital threat. Walmart's investment in its innovation arm is substantial and sustained. If Costco waits another 3–5 years to invest in digital awareness, Sam's may have established enough digital loyalty among younger members that the window for Costco closes permanently in that cohort.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECOMMENDATION -->
+<section id="recommendation">
+  <div class="container">
+    <p class="section-label">Act IV — The Recommendation</p>
+    <h2 class="section-title" style="max-width: 700px;">Activate the members you already have</h2>
+    <div class="divider" style="background: #f87171;"></div>
+    <p class="section-sub">Costco should not try to become Amazon. It should launch a targeted digital awareness campaign to its existing 76 million members — turning passive card-holders into active online shoppers without compromising the in-store experience.</p>
+
+    <div class="rec-phase-grid">
+      <div class="rec-phase">
+        <div class="rec-phase-num">Phase 1 · Year 1</div>
+        <h4>Digital awareness campaign</h4>
+        <p>Make members aware that Costco.com exists and offers Kirkland Signature, bulk staples, and big-ticket items at warehouse prices.</p>
+        <ul>
+          <li>Targeted email campaigns to all 76M members with personalized product recommendations based on purchase history</li>
+          <li>Social media advertising (Meta, YouTube) anchored to the "same prices, delivered to your door" message</li>
+          <li>In-warehouse signage and checkout prompts driving app downloads and first online orders</li>
+          <li>Exclusive online-only deals for members to create a discovery incentive</li>
+        </ul>
+      </div>
+      <div class="rec-phase">
+        <div class="rec-phase-num">Phase 2 · Year 2–3</div>
+        <h4>Digital member retention</h4>
+        <p>Newly activated online members renew at lower rates than warehouse members — close that gap before it becomes structural.</p>
+        <ul>
+          <li>Personalized "online onboarding" for new digital sign-ups, showing curated product lists</li>
+          <li>Expand BOPIS (buy online, pick up in store) to all US locations — the Sam's Club playbook applied to Costco's superior product assortment</li>
+          <li>Executive Membership upgrade incentives tied to online purchase milestones</li>
+          <li>Leverage Instacart partnership to offer same-day on high-frequency consumables</li>
+        </ul>
+      </div>
+      <div class="rec-phase">
+        <div class="rec-phase-num">Phase 3 · Year 3–5</div>
+        <h4>Data-driven personalization</h4>
+        <p>Turn the membership data flywheel into a digital marketing engine that rivals Amazon's recommendation engine — without the privacy tradeoff.</p>
+        <ul>
+          <li>Build a retail media network using first-party member data (Costco is already piloting this)</li>
+          <li>Personalized digital catalogs replacing the printed warehouse mailer</li>
+          <li>International digital expansion prioritizing markets where physical footprint is limited</li>
+          <li>App-first strategy: Costco app grew 48% in traffic in Q1 FY2026 — double down here</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.12); padding-top: 2rem;">
+      <h3 style="font-size: 1.15rem; margin-bottom: 1.5rem;">Risks and mitigations</h3>
+      <div class="risk-row">
+        <div class="risk-label">Risk: Cannibalizes in-store traffic</div>
+        <div class="risk-text">Mitigation: Focus digital campaign on big-ticket, bulky, and online-exclusive items — not the high-frequency in-store consumables. Data shows Costco Logistics already delivers big items (appliances +30%) without meaningful cannibalization of warehouse visits.</div>
+      </div>
+      <div class="risk-row">
+        <div class="risk-label">Risk: Higher fulfillment costs compress margins</div>
+        <div class="risk-text">Mitigation: BOPIS (in-store pickup) requires near-zero incremental fulfillment investment. Costco's own CFO has noted that "the savings on delivery for larger items outweigh those costs." Target the digital campaign at high-ticket categories first.</div>
+      </div>
+      <div class="risk-row">
+        <div class="risk-label">Risk: Online members renew at lower rates</div>
+        <div class="risk-text">Mitigation: This is the core dynamic to solve — Phase 2 of the recommendation is designed specifically to close this gap through digital onboarding and BOPIS integration. Costco's own management cited this as a priority in Q2 FY2025 earnings.</div>
+      </div>
+      <div class="risk-row">
+        <div class="risk-label">Risk: Disrupts low-price brand perception</div>
+        <div class="risk-text">Mitigation: The campaign message must stay anchored in "same warehouse prices, now online." Costco's pricing authority is its moat — digital marketing should extend it, not undermine it. Resolve the in-store vs. online price gap before launch.</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 3rem; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 2rem;">
+      <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">The bottom line</h3>
+      <p style="font-size: 1rem; color: rgba(255,255,255,0.72); line-height: 1.8; max-width: 700px;">Costco already has everything it needs to win online: 76 million loyal members, the most trusted private label in retail, and an e-commerce platform that — when members find it — delivers strong growth. The missing ingredient isn't technology or product. It's telling people it exists. That is a marketing problem, and it's the most solvable kind.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section id="sources">
+  <div class="container">
+    <p class="section-label">Sources & Citations</p>
+    <h2 class="section-title">References</h2>
+    <div class="divider"></div>
+    <ul class="source-list">
+      <li>Costco Wholesale Corporation FY2019 Form 10-K (SEC EDGAR, filed October 2019)</li>
+      <li>Costco Wholesale Corporation FY2024 Annual Report — <a href="https://s201.q4cdn.com/287523651/files/doc_financials/2024/ar/COST-2024-Annual-Report.pdf" target="_blank">PDF via SEC EDGAR</a></li>
+      <li>Costco Q4 FY2024 Earnings Release — <a href="https://www.sec.gov/Archives/edgar/data/0000909832/000090983224000043/costex9918-k92624.htm" target="_blank">SEC 8-K filing</a></li>
+      <li>Digital Commerce 360 — "Costco ecommerce sales rise 18.9% in fiscal Q4" (2024)</li>
+      <li>Digital Commerce 360 — "Costco ecommerce growth rate triples comp. sales" (2025)</li>
+      <li>Digital Commerce 360 — "The incredible bulk: How Costco and Sam's Club compare in ecommerce" (2020)</li>
+      <li>Digital Commerce 360 — "Amazon vs. Walmart: Who sells more online?" (2026)</li>
+      <li>StockDividendScreener — "Costco E-Commerce Online Sales Revenue Statistics"</li>
+      <li>MikMak — "Maximizing eCommerce Sales with Costco" (2024)</li>
+      <li>MacroTrends — "Costco Revenue 2012–2026"</li>
+      <li>Nasdaq — "Could the Rise of E-Commerce Sales at Walmart and Costco Spell Trouble for Amazon?" (2024)</li>
+      <li>Statista — "Largest online retailers in the US 2023, by market share"</li>
+      <li>Inc. — "Costco Hiked Membership Fees. It Angered Customers but Paid Off" (2025)</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <p>Costco Wholesale — Strategic Analysis · FY2019–FY2024 · For academic presentation purposes</p>
+</footer>
+
+<script>
+function toggleExpand(btn) {
+  const content = btn.nextElementSibling;
+  content.classList.toggle('open');
+  btn.textContent = content.classList.contains('open') ? '— Collapse' : '+ Read deeper analysis';
+}
+
+function showTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+/* Nav active state on scroll */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+  navLinks.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+});
+
+/* ── CHARTS ── */
+const gridColor = 'rgba(0,0,0,0.06)';
+const chartDefaults = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { color: gridColor }, ticks: { font: { size: 11 }, color: '#6b7280' } },
+    y: { grid: { color: gridColor }, ticks: { font: { size: 11 }, color: '#6b7280' } }
+  }
+};
+
+/* Revenue chart */
+new Chart(document.getElementById('revChart'), {
+  type: 'bar',
+  data: {
+    labels: ['FY2017','FY2018','FY2019','FY2020','FY2021','FY2022','FY2023','FY2024'],
+    datasets: [
+      { label: 'Net Sales', data: [126.2, 138.4, 149.4, 166.8, 192.1, 222.7, 237.7, 249.6], backgroundColor: '#0a1628', barPercentage: 0.6 },
+      { label: 'Membership Fees', data: [2.85, 3.14, 3.35, 3.54, 3.88, 4.22, 4.58, 4.83], backgroundColor: '#e0281e', barPercentage: 0.6 }
+    ]
+  },
+  options: { ...chartDefaults, scales: { x: { ...chartDefaults.scales.x, stacked: true }, y: { ...chartDefaults.scales.y, stacked: true, ticks: { ...chartDefaults.scales.y.ticks, callback: v => '$' + v + 'B' } } } }
+});
+
+/* Ecomm growth chart */
+new Chart(document.getElementById('ecommChart'), {
+  type: 'bar',
+  data: {
+    labels: ['FY2019','FY2020','FY2021','FY2022','FY2023','FY2024'],
+    datasets: [
+      { label: 'E-commerce comp growth', data: [22, 50, 44, 10, -6, 16], backgroundColor: '#0a1628', barPercentage: 0.45 },
+      { label: 'Total comp growth', data: [6, 9, 16, 14, 5, 5], backgroundColor: '#d1d5db', barPercentage: 0.45 }
+    ]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      x: { ...chartDefaults.scales.x },
+      y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v + '%' } }
+    }
+  }
+});
+
+/* E-commerce revenue chart */
+new Chart(document.getElementById('erevChart'), {
+  type: 'line',
+  data: {
+    labels: ['FY2019','FY2020','FY2021','FY2022','FY2023','FY2024'],
+    datasets: [{
+      data: [6, 9, 13.4, 15.6, 14.3, 17.5],
+      borderColor: '#e0281e', backgroundColor: 'rgba(224,40,30,0.08)',
+      fill: true, tension: 0.3, pointRadius: 4, pointBackgroundColor: '#e0281e'
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      x: { ...chartDefaults.scales.x },
+      y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v => '$' + v + 'B' }, min: 0 }
+    }
+  }
+});
+
+/* Operating margin chart */
+new Chart(document.getElementById('marginChart'), {
+  type: 'line',
+  data: {
+    labels: ['FY2017','FY2018','FY2019','FY2020','FY2021','FY2022','FY2023','FY2024'],
+    datasets: [{
+      data: [3.19, 3.16, 3.10, 3.18, 3.36, 3.28, 3.42, 3.58],
+      borderColor: '#0a1628', backgroundColor: 'rgba(10,22,40,0.06)',
+      fill: true, tension: 0.3, pointRadius: 4, pointBackgroundColor: '#0a1628'
+    }]
+  },
+  options: {
+    ...chartDefaults,
+    scales: {
+      x: { ...chartDefaults.scales.x },
+      y: { ...chartDefaults.scales.y, ticks: { ...chartDefaults.scales.y.ticks, callback: v => v + '%' }, min: 2.5, max: 4.5 }
+    }
+  }
+});
+
+/* Membership chart — dual axis */
+new Chart(document.getElementById('memberChart'), {
+  type: 'bar',
+  data: {
+    labels: ['FY2019','FY2020','FY2021','FY2022','FY2023','FY2024'],
+    datasets: [
+      { type: 'bar', label: 'Paid members (M)', data: [53.9, 58.1, 61.7, 65.8, 71.0, 76.0], backgroundColor: '#0a1628', yAxisID: 'y', barPercentage: 0.55 },
+      { type: 'line', label: 'US/Canada renewal %', data: [88.4, 91.3, 91.6, 92.3, 92.6, 92.9], borderColor: '#e0281e', backgroundColor: 'transparent', yAxisID: 'y1', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#e0281e' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { font: { size: 11 }, color: '#6b7280' } },
+      y: { grid: { color: gridColor }, ticks: { font: { size: 11 }, color: '#6b7280', callback: v => v + 'M' }, min: 40, max: 90 },
+      y1: { position: 'right', grid: { display: false }, ticks: { font: { size: 11 }, color: '#e0281e', callback: v => v + '%' }, min: 85, max: 95 }
+    }
+  }
+});
+</script>
+</body>
+</html>
